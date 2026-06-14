@@ -85,6 +85,36 @@ def hand(dr, cx, cy, angle, length, tail, width, color):
             fill=color, width=width)
 
 
+def _xy(cx, cy, s, c, a, p):
+    return (cx + a * s + p * c, cy - a * c + p * s)
+
+
+def paddle(dr, cx, cy, angle, length, blade_len, bw, sw, tail, loop_r, pen, color):
+    s, c = math.sin(angle), math.cos(angle)
+    b = length - blade_len
+    local = [
+        (-tail, sw), (b, sw),
+        (b + 0.12 * blade_len, bw), (b + 0.70 * blade_len, bw),
+        (b + 0.90 * blade_len, bw * 0.55), (length, bw * 0.16),
+        (length, -bw * 0.16), (b + 0.90 * blade_len, -bw * 0.55),
+        (b + 0.70 * blade_len, -bw), (b + 0.12 * blade_len, -bw),
+        (b, -sw), (-tail, -sw),
+    ]
+    pts = [_xy(cx, cy, s, c, a, p) for (a, p) in local]
+    dr.line(pts + [pts[0]], fill=color, width=pen, joint="curve")
+    lx, ly = cx - tail * s, cy + tail * c
+    dr.ellipse([lx - loop_r, ly - loop_r, lx + loop_r, ly + loop_r],
+               outline=color, width=pen)
+
+
+def second_hand(dr, cx, cy, angle, length, tail, color):
+    s, c = math.sin(angle), math.cos(angle)
+    dr.line([cx - tail * s, cy + tail * c, cx + length * s, cy - length * c],
+            fill=color, width=2)
+    lx, ly = cx - tail * s, cy + tail * c
+    dr.ellipse([lx - 4, ly - 4, lx + 4, ly + 4], outline=color, width=2)
+
+
 def small_font(sz):
     try:
         return ImageFont.truetype("/System/Library/Fonts/Supplemental/Arial.ttf", sz)
@@ -99,15 +129,18 @@ def analog(h, m, sec, size=320):
     r = size / 2
     dr.ellipse([0, 0, size - 1, size - 1], fill=(0, 0, 0, 255))
 
+    # border ring
+    dr.ellipse([cx - (r - 2), cy - (r - 2), cx + (r - 2), cy + (r - 2)],
+               outline=(85, 85, 85, 255), width=2)
     for i in range(60):
         a = i * math.pi / 30.0
         s, c = math.sin(a), math.cos(a)
-        outer = r - 2
-        inner = r - 13 if i % 5 == 0 else r - 7
+        outer = r - 3
+        inner = r - 12 if i % 5 == 0 else r - 7
         dr.line([cx + inner * s, cy - inner * c, cx + outer * s, cy - outer * c],
                 fill=(85, 85, 85, 255), width=3 if i % 5 == 0 else 1)
 
-    rnum = r - 32
+    rnum = r - 28
     for n in range(1, 13):
         a = n * math.pi / 6.0
         x = cx + rnum * math.sin(a)
@@ -120,9 +153,11 @@ def analog(h, m, sec, size=320):
     hourA = (h % 12 + m / 60.0) * math.pi / 6.0
     minA = (m + sec / 60.0) * math.pi / 30.0
     secA = sec * math.pi / 30.0
-    hand(dr, cx, cy, hourA, r * 0.50, r * 0.10, 7, (255, 255, 255, 255))
-    hand(dr, cx, cy, minA, r * 0.76, r * 0.14, 4, (255, 255, 255, 255))
-    hand(dr, cx, cy, secA, r * 0.84, r * 0.20, 2, (230, 40, 40, 255))
+    paddle(dr, cx, cy, hourA, r * 0.52, r * 0.52 * 0.44, r * 0.090, r * 0.018,
+           r * 0.22, r * 0.055, 3, (255, 255, 255, 255))
+    paddle(dr, cx, cy, minA, r * 0.76, r * 0.76 * 0.36, r * 0.068, r * 0.016,
+           r * 0.24, r * 0.048, 2, (255, 255, 255, 255))
+    second_hand(dr, cx, cy, secA, r * 0.82, r * 0.24, (230, 40, 40, 255))
 
     dr.ellipse([cx - 5, cy - 5, cx + 5, cy + 5], fill=(255, 255, 255, 255))
     dr.ellipse([cx - 2, cy - 2, cx + 2, cy + 2], fill=(230, 40, 40, 255))

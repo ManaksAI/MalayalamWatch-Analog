@@ -22,7 +22,7 @@ OUT_DIR = os.path.join(os.path.dirname(__file__), "..", "resources", "fonts")
 
 # (basename, glyph size px): ml_numerals -> big stacked digital face,
 #                            ml_dial     -> small markers around the analog dial
-BUILDS = [("ml_numerals", 66), ("ml_dial", 38)]
+BUILDS = [("ml_numerals", 66), ("ml_dial", 28)]
 
 # codepoint -> source character (None = draw manually)
 GLYPHS = {}

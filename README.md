@@ -7,8 +7,9 @@ numerals** — the pre-reform multiplicative system that uses the archaic place 
 ## Face styles (setting: **Face Style**)
 
 - **Analog** (default): a round dial with the Malayalam hour numerals 1–12 (൧ … ൰൨)
-  placed around the rim, minute ticks, and hour / minute / second hands.
-  The red second hand animates while the watch is awake (`ShowSeconds` toggle).
+  along the border ring, minute ticks, and **boat-paddle hands** (leaf blade at the
+  tip, grip-loop handle at the tail). The red second hand animates while the watch is
+  awake (`ShowSeconds` toggle).
 - **Digital**: hour stacked above minute in old numerals (the forms get too wide to
   sit on one line), respecting the **Clock Format** setting.
 

@@ -54,22 +54,27 @@ class MalayalamWatchView extends WatchUi.WatchFace {
         var hour  = clock.hour % 12;
         var min   = clock.min;
         var sec   = clock.sec;
+        var r     = radius;
 
-        drawTicks(dc);
-        drawDialNumerals(dc);
-        drawDate(dc, cx, cy + (radius * 0.40).toNumber());
+        drawRingAndTicks(dc, r);
+        drawDialNumerals(dc, r);
+        drawDate(dc, cx, cy + (r * 0.40).toNumber());
 
         // Hands. Angles measured clockwise from 12 o'clock.
         var hourA = (hour + min / 60.0) * Math.PI / 6.0;
         var minA  = (min + sec / 60.0) * Math.PI / 30.0;
 
-        drawHand(dc, hourA, radius * 0.50, radius * 0.10, 7, Graphics.COLOR_WHITE);
-        drawHand(dc, minA,  radius * 0.76, radius * 0.14, 4, Graphics.COLOR_WHITE);
+        // Boat-paddle hands (outline). Args: angle, length, bladeLen,
+        // bladeHalfW, shaftHalfW, tail, loopR, pen, color.
+        drawPaddle(dc, hourA, r * 0.52, r * 0.52 * 0.44, r * 0.090, r * 0.018,
+                   r * 0.22, r * 0.055, 3, Graphics.COLOR_WHITE);
+        drawPaddle(dc, minA,  r * 0.76, r * 0.76 * 0.36, r * 0.068, r * 0.016,
+                   r * 0.24, r * 0.048, 2, Graphics.COLOR_WHITE);
 
         var showSec = prop("ShowSeconds", true);
         if (showSec && isAwake) {
             var secA = sec * Math.PI / 30.0;
-            drawHand(dc, secA, radius * 0.84, radius * 0.20, 2, Graphics.COLOR_RED);
+            drawSecondHand(dc, secA, r * 0.82, r * 0.24, Graphics.COLOR_RED);
         }
 
         // Centre hub.
@@ -79,24 +84,26 @@ class MalayalamWatchView extends WatchUi.WatchFace {
         dc.fillCircle(cx, cy, 2);
     }
 
-    // 60 minute ticks, longer/bolder every five minutes.
-    function drawTicks(dc) {
+    // Outer border ring + minute ticks pointing inward from the rim.
+    function drawRingAndTicks(dc, r) {
         dc.setColor(0x555555, Graphics.COLOR_TRANSPARENT);
+        dc.setPenWidth(2);
+        dc.drawCircle(cx, cy, r - 2);
         for (var i = 0; i < 60; i++) {
             var a = i * Math.PI / 30.0;
             var sinA = Math.sin(a);
             var cosA = Math.cos(a);
-            var outer = radius - 2;
-            var inner = (i % 5 == 0) ? radius - 13 : radius - 7;
+            var outer = r - 3;
+            var inner = (i % 5 == 0) ? r - 12 : r - 7;
             dc.setPenWidth((i % 5 == 0) ? 3 : 1);
             dc.drawLine(cx + inner * sinA, cy - inner * cosA,
                         cx + outer * sinA, cy - outer * cosA);
         }
     }
 
-    // Malayalam hour numerals 1..12 around the rim.
-    function drawDialNumerals(dc) {
-        var rNum = radius - 32;
+    // Malayalam hour numerals 1..12 along the border ring.
+    function drawDialNumerals(dc, r) {
+        var rNum = r - 28;
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
         for (var n = 1; n <= 12; n++) {
             var a = n * Math.PI / 6.0;
@@ -118,14 +125,58 @@ class MalayalamWatchView extends WatchUi.WatchFace {
         return ML_TEN + mlDigits[n - 10];   // 11 -> ൰൧, 12 -> ൰൨
     }
 
-    // One clock hand: a line from a short tail through the centre to the tip.
-    function drawHand(dc, angle, length, tail, width, color) {
+    // ── Boat-paddle shaped hand (outline) ───────────────────────
+    // A long shaft, a leaf-shaped blade at the tip, and a small grip
+    // loop at the tail — drawn as a stroked silhouette.
+    function drawPaddle(dc, angle, length, bladeLen, bw, sw, tail, loopR, pen, color) {
+        var sinA = Math.sin(angle);
+        var cosA = Math.cos(angle);
+        var b = length - bladeLen;   // blade base distance from centre
+
+        // Local (along, perp) outline points, tail -> tip up the right
+        // side, then back down the left side.
+        var local = [
+            [-tail, sw],
+            [b, sw],
+            [b + 0.12 * bladeLen, bw],
+            [b + 0.70 * bladeLen, bw],
+            [b + 0.90 * bladeLen, bw * 0.55],
+            [length, bw * 0.16],
+            [length, -bw * 0.16],
+            [b + 0.90 * bladeLen, -bw * 0.55],
+            [b + 0.70 * bladeLen, -bw],
+            [b + 0.12 * bladeLen, -bw],
+            [b, -sw],
+            [-tail, -sw]
+        ];
+
+        dc.setColor(color, Graphics.COLOR_TRANSPARENT);
+        dc.setPenWidth(pen);
+        var n = local.size();
+        for (var i = 0; i < n; i++) {
+            var p0 = local[i];
+            var p1 = local[(i + 1) % n];
+            dc.drawLine(cx + p0[0] * sinA + p0[1] * cosA,
+                        cy - p0[0] * cosA + p0[1] * sinA,
+                        cx + p1[0] * sinA + p1[1] * cosA,
+                        cy - p1[0] * cosA + p1[1] * sinA);
+        }
+
+        // Grip loop at the tail end.
+        var lx = cx - (tail) * sinA;
+        var ly = cy + (tail) * cosA;
+        dc.drawCircle(lx, ly, loopR);
+    }
+
+    // Thin paddle-style second hand: a line tip + a small grip loop tail.
+    function drawSecondHand(dc, angle, length, tail, color) {
         var sinA = Math.sin(angle);
         var cosA = Math.cos(angle);
         dc.setColor(color, Graphics.COLOR_TRANSPARENT);
-        dc.setPenWidth(width);
+        dc.setPenWidth(2);
         dc.drawLine(cx - tail * sinA, cy + tail * cosA,
                     cx + length * sinA, cy - length * cosA);
+        dc.drawCircle(cx - tail * sinA, cy + tail * cosA, 4);
     }
 
     // ════════════════════════════════════════════════════════════
