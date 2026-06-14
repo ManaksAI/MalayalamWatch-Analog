@@ -1,16 +1,16 @@
 info face="Malayalam Sangam MN" size=66 bold=0 italic=0 charset="" unicode=1 stretchH=100 smooth=1 aa=1 padding=0,0,0,0 spacing=2,2 outline=0
-common lineHeight=85 base=57 scaleW=687 scaleH=85 pages=1 packed=0 alphaChnl=1 redChnl=0 greenChnl=0 blueChnl=0
+common lineHeight=90 base=61 scaleW=834 scaleH=90 pages=1 packed=0 alphaChnl=1 redChnl=0 greenChnl=0 blueChnl=0
 page id=0 file="ml_numerals.png"
 chars count=11
-char id=3431 x=2 y=0 width=57 height=85 xoffset=0 yoffset=0 xadvance=51 page=0 chnl=15
-char id=3432 x=61 y=0 width=59 height=85 xoffset=0 yoffset=0 xadvance=53 page=0 chnl=15
-char id=3433 x=122 y=0 width=71 height=85 xoffset=0 yoffset=0 xadvance=65 page=0 chnl=15
-char id=3434 x=195 y=0 width=47 height=85 xoffset=0 yoffset=0 xadvance=41 page=0 chnl=15
-char id=3435 x=244 y=0 width=64 height=85 xoffset=0 yoffset=0 xadvance=58 page=0 chnl=15
-char id=3436 x=310 y=0 width=85 height=85 xoffset=0 yoffset=0 xadvance=79 page=0 chnl=15
-char id=3437 x=397 y=0 width=35 height=85 xoffset=0 yoffset=0 xadvance=29 page=0 chnl=15
-char id=3438 x=434 y=0 width=58 height=85 xoffset=0 yoffset=0 xadvance=52 page=0 chnl=15
-char id=3439 x=494 y=0 width=67 height=85 xoffset=0 yoffset=0 xadvance=61 page=0 chnl=15
-char id=3440 x=563 y=0 width=61 height=85 xoffset=0 yoffset=0 xadvance=55 page=0 chnl=15
-char id=8212 x=626 y=0 width=59 height=85 xoffset=0 yoffset=0 xadvance=53 page=0 chnl=15
+char id=3431 x=2 y=0 width=69 height=90 xoffset=0 yoffset=0 xadvance=63 page=0 chnl=15
+char id=3432 x=73 y=0 width=66 height=90 xoffset=0 yoffset=0 xadvance=60 page=0 chnl=15
+char id=3433 x=141 y=0 width=82 height=90 xoffset=0 yoffset=0 xadvance=76 page=0 chnl=15
+char id=3434 x=225 y=0 width=63 height=90 xoffset=0 yoffset=0 xadvance=57 page=0 chnl=15
+char id=3435 x=290 y=0 width=75 height=90 xoffset=0 yoffset=0 xadvance=69 page=0 chnl=15
+char id=3436 x=367 y=0 width=92 height=90 xoffset=0 yoffset=0 xadvance=86 page=0 chnl=15
+char id=3437 x=461 y=0 width=59 height=90 xoffset=0 yoffset=0 xadvance=53 page=0 chnl=15
+char id=3438 x=522 y=0 width=73 height=90 xoffset=0 yoffset=0 xadvance=67 page=0 chnl=15
+char id=3439 x=597 y=0 width=85 height=90 xoffset=0 yoffset=0 xadvance=79 page=0 chnl=15
+char id=3440 x=684 y=0 width=80 height=90 xoffset=0 yoffset=0 xadvance=74 page=0 chnl=15
+char id=8212 x=766 y=0 width=66 height=90 xoffset=0 yoffset=0 xadvance=60 page=0 chnl=15
 kernings count=0

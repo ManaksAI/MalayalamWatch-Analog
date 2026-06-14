@@ -37,15 +37,21 @@ For the analog dial: 11 → ൰൧, 12 → ൰൨.
 
 ## Font
 
-Garmin's built-in fonts have no Malayalam glyphs, so the needed glyphs (൧–൯, ൰, and a
-dash placeholder) are baked into custom bitmap fonts under `resources/fonts/`:
-`ml_numerals.*` (large, digital) and `ml_dial.*` (small, analog markers), both
-generated from *Malayalam Sangam MN*.
+Garmin's built-in fonts have no Malayalam glyphs, so the needed glyphs are baked in from
+**Noto Sans Malayalam** (SemiBold), which is licensed under the SIL Open Font License —
+safe to redistribute in a published app. The source font and its licence live in
+`tools/fonts/` (`NotoSansMalayalam.ttf`, `OFL.txt`).
 
-Regenerate the font (e.g. to change size — edit `SIZE` in the script):
+- `resources/fonts/ml_numerals.*` — large bitmap font for the digital face
+  (built by `tools/gen_font.py`).
+- `resources/drawables/dial_<u|r|t>_*.png` — the 12 analog hour numerals, pre-rotated
+  for each orientation style (built by `tools/gen_dial.py`).
+
+Regenerate the glyph assets (needs Pillow; edit `SIZE`/`FONT_WEIGHT` to tweak):
 
 ```sh
-python3 tools/gen_font.py        # needs Pillow
+python3 tools/gen_font.py        # digital bitmap font
+python3 tools/gen_dial.py        # analog hour numerals, all 3 orientation styles
 ```
 
 Faithful layout preview without the simulator:

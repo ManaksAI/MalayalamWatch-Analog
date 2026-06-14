@@ -17,12 +17,17 @@ Outputs: resources/drawables/dial_<u|r|t>_1.png .. dial_<u|r|t>_12.png
 import os
 from PIL import Image, ImageDraw, ImageFont
 
-FONT_PATH = "/System/Library/Fonts/Supplemental/Malayalam Sangam MN.ttc"
+FONT_PATH = os.path.join(os.path.dirname(__file__), "fonts", "NotoSansMalayalam.ttf")
+FONT_WEIGHT = "SemiBold"
 SIZE = 30
 PAD = 4
 INK = (17, 17, 17, 255)        # e-paper ink
 OUT = os.path.join(os.path.dirname(__file__), "..", "resources", "drawables")
 font = ImageFont.truetype(FONT_PATH, SIZE)
+try:
+    font.set_variation_by_name(FONT_WEIGHT)
+except Exception:
+    pass
 
 
 def label(n):

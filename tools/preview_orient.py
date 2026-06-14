@@ -3,10 +3,14 @@
 import math, os
 from PIL import Image, ImageDraw, ImageFont
 
-FONT_PATH = "/System/Library/Fonts/Supplemental/Malayalam Sangam MN.ttc"
+FONT_PATH = os.path.join(os.path.dirname(__file__), "fonts", "NotoSansMalayalam.ttf")
 PAPER = (201, 198, 187, 255); INK = (17, 17, 17, 255)
 SOFT = (110, 107, 97, 255); SEC = (68, 64, 56, 255)
 font = ImageFont.truetype(FONT_PATH, 30)
+try:
+    font.set_variation_by_name("SemiBold")
+except Exception:
+    pass
 
 
 def label(n):

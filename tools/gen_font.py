@@ -15,7 +15,8 @@ Outputs into resources/fonts/: ml_numerals.png, ml_numerals.fnt
 import os
 from PIL import Image, ImageDraw, ImageFont
 
-FONT_PATH = "/System/Library/Fonts/Supplemental/Malayalam Sangam MN.ttc"
+FONT_PATH = os.path.join(os.path.dirname(__file__), "fonts", "NotoSansMalayalam.ttf")
+FONT_WEIGHT = "SemiBold"       # variable-font instance to use
 PAD = 3                        # transparent padding around each glyph cell
 GAP = 2                        # gap between cells in the atlas
 OUT_DIR = os.path.join(os.path.dirname(__file__), "..", "resources", "fonts")
@@ -36,6 +37,10 @@ def build(basename, size):
     png_name = basename + ".png"
     fnt_name = basename + ".fnt"
     font = ImageFont.truetype(FONT_PATH, size)
+    try:
+        font.set_variation_by_name(FONT_WEIGHT)
+    except Exception:
+        pass
     ascent, descent = font.getmetrics()
     cell_h = ascent + descent + 2 * PAD
 
