@@ -10,6 +10,7 @@ accept the developer agreement, submit) — these assets are ready to attach.
   `monkeyc -e -f monkey.jungle -o store/MalayalamWatch.iq -y ../../developer_key`
 
 ## Listing assets
+- **`hero_1440x720.png`** — 1440×720 hero/banner image.
 - **`icon_512.png`** — 512×512 marketing icon.
 - **`screenshot_1_upright.png` / `_2_radial.png` / `_3_tangential.png` / `_4_digital.png`**
   — 454×454 screenshots showing the styles.
