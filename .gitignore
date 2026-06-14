@@ -3,6 +3,8 @@ bin/
 *.prg
 *.prg.debug.xml
 *.iq
+# ...but keep the release package staged for store upload
+!store/MalayalamWatch.iq
 
 # Never commit the Connect IQ developer signing key
 developer_key
@@ -15,3 +17,7 @@ developer_key
 # Editor
 *.code-workspace
 .vscode/
+
+# Python
+__pycache__/
+*.pyc
