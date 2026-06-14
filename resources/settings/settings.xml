@@ -19,6 +19,13 @@
         <settingConfig type="boolean" />
     </setting>
 
+    <setting propertyKey="@Properties.DayNumerals" title="@Strings.DayNumeralsTitle">
+        <settingConfig type="list">
+            <listEntry value="0">@Strings.DayMalayalam</listEntry>
+            <listEntry value="1">@Strings.DayStandard</listEntry>
+        </settingConfig>
+    </setting>
+
     <setting propertyKey="@Properties.ClockMode" title="@Strings.ClockModeTitle">
         <settingConfig type="list">
             <listEntry value="0">@Strings.ClockModeDevice</listEntry>

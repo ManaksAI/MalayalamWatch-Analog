@@ -308,8 +308,17 @@ class MalayalamWatchView extends WatchUi.WatchFace {
             dateKey = key;
         }
 
-        var dayStr = mlNumber(today.day);
-        var dayW   = dc.getTextWidthInPixels(dayStr, smallFont);
+        // Day-of-month: Malayalam numeral font, or standard digits in a system font.
+        var dayStr;
+        var dayFont;
+        if (prop("DayNumerals", 0) == 1) {
+            dayStr  = today.day.toString();
+            dayFont = Graphics.FONT_SMALL;
+        } else {
+            dayStr  = mlNumber(today.day);
+            dayFont = smallFont;
+        }
+        var dayW   = dc.getTextWidthInPixels(dayStr, dayFont);
         var gap    = 6;
         var wdW = wdBmp.getWidth();
         var wdH = wdBmp.getHeight();
@@ -321,7 +330,7 @@ class MalayalamWatchView extends WatchUi.WatchFace {
             var tW = wdW + gap + dayW;
             var sX = x - tW / 2;
             dc.drawBitmap(sX, y - wdH / 2, wdBmp);
-            dc.drawText(sX + wdW + gap, y, smallFont, dayStr,
+            dc.drawText(sX + wdW + gap, y, dayFont, dayStr,
                 Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
             return;
         }
@@ -336,7 +345,7 @@ class MalayalamWatchView extends WatchUi.WatchFace {
 
         var totalW = dayW + gap + monBmp.getWidth();
         var startX = x - totalW / 2;
-        dc.drawText(startX, y2, smallFont, dayStr,
+        dc.drawText(startX, y2, dayFont, dayStr,
             Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
         dc.drawBitmap(startX + dayW + gap, y2 - monH / 2, monBmp);
     }

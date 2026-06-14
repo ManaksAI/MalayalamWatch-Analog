@@ -9,6 +9,9 @@
     <!-- analog second hand -->
     <property id="ShowSeconds" type="boolean">true</property>
 
+    <!-- day-of-month numerals in the date: 0 = Malayalam, 1 = standard -->
+    <property id="DayNumerals" type="number">0</property>
+
     <!-- digital clock format: 0 = device setting, 1 = 12-hour, 2 = 24-hour -->
     <property id="ClockMode" type="number">0</property>
 

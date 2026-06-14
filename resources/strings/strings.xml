@@ -13,6 +13,10 @@
 
     <string id="ShowSecondsTitle">Show Second Hand (Analog)</string>
 
+    <string id="DayNumeralsTitle">Date Day Numerals</string>
+    <string id="DayMalayalam">Malayalam</string>
+    <string id="DayStandard">Standard</string>
+
     <string id="ClockModeTitle">Clock Format (Digital)</string>
     <string id="ClockModeDevice">Use device setting</string>
     <string id="ClockMode12">12-hour</string>
