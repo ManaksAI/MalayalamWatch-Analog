@@ -1,0 +1,17 @@
+# Connect IQ build output
+bin/
+*.prg
+*.prg.debug.xml
+*.iq
+
+# Never commit the Connect IQ developer signing key
+developer_key
+*.der
+*.pem
+
+# macOS
+.DS_Store
+
+# Editor
+*.code-workspace
+.vscode/

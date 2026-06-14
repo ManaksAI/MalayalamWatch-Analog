@@ -1,0 +1,22 @@
+<settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://developer.garmin.com/downloads/connect-iq/resources.xsd">
+
+    <setting propertyKey="@Properties.FaceStyle" title="@Strings.FaceStyleTitle">
+        <settingConfig type="list">
+            <listEntry value="0">@Strings.StyleAnalog</listEntry>
+            <listEntry value="1">@Strings.StyleDigital</listEntry>
+        </settingConfig>
+    </setting>
+
+    <setting propertyKey="@Properties.ShowSeconds" title="@Strings.ShowSecondsTitle">
+        <settingConfig type="boolean" />
+    </setting>
+
+    <setting propertyKey="@Properties.ClockMode" title="@Strings.ClockModeTitle">
+        <settingConfig type="list">
+            <listEntry value="0">@Strings.ClockModeDevice</listEntry>
+            <listEntry value="1">@Strings.ClockMode12</listEntry>
+            <listEntry value="2">@Strings.ClockMode24</listEntry>
+        </settingConfig>
+    </setting>
+
+</settings>

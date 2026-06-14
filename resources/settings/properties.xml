@@ -1,0 +1,12 @@
+<properties xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://developer.garmin.com/downloads/connect-iq/resources.xsd">
+
+    <!-- 0 = analog dial, 1 = digital stacked numerals -->
+    <property id="FaceStyle" type="number">0</property>
+
+    <!-- analog second hand -->
+    <property id="ShowSeconds" type="boolean">true</property>
+
+    <!-- digital clock format: 0 = device setting, 1 = 12-hour, 2 = 24-hour -->
+    <property id="ClockMode" type="number">0</property>
+
+</properties>
