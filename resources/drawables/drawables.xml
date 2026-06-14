@@ -41,4 +41,27 @@
     <bitmap id="DialT10" filename="dial_t_10.png" />
     <bitmap id="DialT11" filename="dial_t_11.png" />
     <bitmap id="DialT12" filename="dial_t_12.png" />
+
+    <!-- Malayalam weekday names, 1=Sunday .. 7=Saturday (CoreText-shaped). -->
+    <bitmap id="Wd1" filename="wd_1.png" />
+    <bitmap id="Wd2" filename="wd_2.png" />
+    <bitmap id="Wd3" filename="wd_3.png" />
+    <bitmap id="Wd4" filename="wd_4.png" />
+    <bitmap id="Wd5" filename="wd_5.png" />
+    <bitmap id="Wd6" filename="wd_6.png" />
+    <bitmap id="Wd7" filename="wd_7.png" />
+
+    <!-- Malayalam month names 1..12 (CoreText-shaped). -->
+    <bitmap id="Mon1"  filename="mon_1.png"  />
+    <bitmap id="Mon2"  filename="mon_2.png"  />
+    <bitmap id="Mon3"  filename="mon_3.png"  />
+    <bitmap id="Mon4"  filename="mon_4.png"  />
+    <bitmap id="Mon5"  filename="mon_5.png"  />
+    <bitmap id="Mon6"  filename="mon_6.png"  />
+    <bitmap id="Mon7"  filename="mon_7.png"  />
+    <bitmap id="Mon8"  filename="mon_8.png"  />
+    <bitmap id="Mon9"  filename="mon_9.png"  />
+    <bitmap id="Mon10" filename="mon_10.png" />
+    <bitmap id="Mon11" filename="mon_11.png" />
+    <bitmap id="Mon12" filename="mon_12.png" />
 </drawables>

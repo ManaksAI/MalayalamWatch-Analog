@@ -30,6 +30,10 @@ def load_font(basename):
 
 
 BIG = load_font("ml_numerals")   # digital face; analog uses pre-rotated dial_*.png
+SMALL = load_font("ml_small")    # day-of-month numerals in the date line
+
+# sample date for the preview: Sunday (wd_1), day 14, May (mon_5)
+DATE_WD, DATE_DAY, DATE_MON = 1, 14, 5
 
 # e-paper palette (mirror of MalayalamWatchView)
 PAPER = (201, 198, 187, 255)
@@ -122,6 +126,32 @@ def second_hand(dr, cx, cy, angle, length, tail, color):
     dr.ellipse([lx - 4, ly - 4, lx + 4, ly + 4], outline=color, width=2)
 
 
+def date_bmp(kind, idx):
+    p = os.path.join(HERE, "..", "resources", "drawables", "%s_%d.png" % (kind, idx))
+    return Image.open(p).convert("RGBA")
+
+
+def draw_date(img, cx, y, full):
+    wd = date_bmp("wd", DATE_WD)
+    day = render(SMALL, number_cps(DATE_DAY), INK[:3])
+    gap = 6
+    if not full:
+        tW = wd.width + gap + day.width
+        sx = int(cx - tW / 2)
+        img.alpha_composite(wd, (sx, int(y - wd.height / 2)))
+        paste_centered(img, day, sx + wd.width + gap + day.width / 2, y)
+        return
+    mon = date_bmp("mon", DATE_MON)
+    line_gap = 4
+    y1 = y - (mon.height + line_gap) / 2
+    y2 = y + (wd.height + line_gap) / 2
+    img.alpha_composite(wd, (int(cx - wd.width / 2), int(y1 - wd.height / 2)))
+    tW = day.width + gap + mon.width
+    sx = int(cx - tW / 2)
+    paste_centered(img, day, sx + day.width / 2, y2)
+    img.alpha_composite(mon, (sx + day.width + gap, int(y2 - mon.height / 2)))
+
+
 def small_font(sz):
     try:
         return ImageFont.truetype("/System/Library/Fonts/Supplemental/Arial.ttf", sz)
@@ -156,8 +186,7 @@ def analog(h, m, sec, size=320):
         glyph = Image.open(os.path.join(draw_dir, "dial_%s_%d.png" % (DIAL_STYLE, n))).convert("RGBA")
         paste_centered(img, glyph, x, y)
 
-    df = small_font(15)
-    dr.text((cx, cy + r * 0.40), "WED 14", font=df, fill=SOFT, anchor="mm")
+    draw_date(img, cx, cy + r * 0.42, True)
 
     hourA = (h % 12 + m / 60.0) * math.pi / 6.0
     minA = (m + sec / 60.0) * math.pi / 30.0
@@ -183,7 +212,7 @@ def digital(h, m, size=320):
     paste_centered(img, render(BIG, number_cps(h), INK[:3]), cx, cy - sep - lh / 2)
     paste_centered(img, render(BIG, number_cps(m), INK[:3]), cx, cy + sep + lh / 2)
     dr.line([cx - 34, cy, cx + 34, cy], fill=SOFT, width=2)
-    dr.text((cx, cy - lh - 24), "WED 14", font=small_font(15), fill=SOFT, anchor="mm")
+    draw_date(img, cx, cy - lh - 18, False)
     return img
 
 

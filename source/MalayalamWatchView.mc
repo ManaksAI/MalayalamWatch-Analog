@@ -26,8 +26,12 @@ class MalayalamWatchView extends WatchUi.WatchFace {
     private var cy;
     private var radius;
     private var bigFont;      // stacked digital numerals
+    private var smallFont;    // small numerals for the day-of-month
     private var dialBmps;     // pre-rotated hour numerals 1..12 (current style)
     private var loadedStyle = -1;
+    private var wdBmp;        // cached weekday-name bitmap
+    private var monBmp;       // cached month-name bitmap
+    private var dateKey = -1; // month*32 + day_of_week, to refresh the cache
     private var isAwake = true;
 
     function initialize() {
@@ -38,7 +42,8 @@ class MalayalamWatchView extends WatchUi.WatchFace {
         cx = dc.getWidth() / 2;
         cy = dc.getHeight() / 2;
         radius = (cx < cy) ? cx : cy;
-        bigFont  = WatchUi.loadResource(Rez.Fonts.MlNumerals);
+        bigFont   = WatchUi.loadResource(Rez.Fonts.MlNumerals);
+        smallFont = WatchUi.loadResource(Rez.Fonts.MlSmall);
         loadDial(prop("NumeralStyle", 0));
     }
 
@@ -117,7 +122,7 @@ class MalayalamWatchView extends WatchUi.WatchFace {
 
         drawRingAndTicks(dc, r);
         drawDialNumerals(dc, r);
-        drawDate(dc, cx, cy + (r * 0.40).toNumber());
+        drawDate(dc, cx, cy + (r * 0.42).toNumber(), true);
 
         // Hands. Angles measured clockwise from 12 o'clock.
         var hourA = (hour + min / 60.0) * Math.PI / 6.0;
@@ -239,7 +244,7 @@ class MalayalamWatchView extends WatchUi.WatchFace {
         var fh  = dc.getFontHeight(bigFont);
         var sep = 6;
 
-        drawDate(dc, cx, cy - fh - 24);
+        drawDate(dc, cx, cy - fh - 18, false);
 
         dc.setColor(INK, Graphics.COLOR_TRANSPARENT);
         dc.drawText(cx, cy - sep - fh, bigFont, mlNumber(hour),
@@ -291,13 +296,74 @@ class MalayalamWatchView extends WatchUi.WatchFace {
         return s;
     }
 
-    // ── shared helpers ──────────────────────────────────────────
-    function drawDate(dc, x, y) {
-        var today   = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
-        var dateStr = Lang.format("$1$ $2$", [today.day_of_week, today.day]);
-        dc.setColor(SOFT, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(x, y, Graphics.FONT_XTINY, dateStr,
-            Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+    // ── Malayalam date (two lines centred on y) ─────────────────
+    //   line 1:  weekday            e.g. ഞായർ
+    //   line 2:  <day> <month>      e.g. ൰൪ മേയ്
+    function drawDate(dc, x, y, full) {
+        var today = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
+        var key = today.month * 32 + today.day_of_week;
+        if (key != dateKey) {
+            wdBmp  = loadWeekday(today.day_of_week);
+            monBmp = loadMonth(today.month);
+            dateKey = key;
+        }
+
+        var dayStr = mlNumber(today.day);
+        var dayW   = dc.getTextWidthInPixels(dayStr, smallFont);
+        var gap    = 6;
+        var wdW = wdBmp.getWidth();
+        var wdH = wdBmp.getHeight();
+
+        dc.setColor(INK, Graphics.COLOR_TRANSPARENT);
+
+        if (!full) {
+            // Compact one line: weekday + day  (e.g. ഞായർ ൰൪)
+            var tW = wdW + gap + dayW;
+            var sX = x - tW / 2;
+            dc.drawBitmap(sX, y - wdH / 2, wdBmp);
+            dc.drawText(sX + wdW + gap, y, smallFont, dayStr,
+                Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+            return;
+        }
+
+        // Two lines: weekday  /  day + month
+        var monH = monBmp.getHeight();
+        var lineGap = 4;
+        var y1 = y - (monH + lineGap) / 2;     // weekday line centre
+        var y2 = y + (wdH + lineGap) / 2;      // day+month line centre
+
+        dc.drawBitmap(x - wdW / 2, y1 - wdH / 2, wdBmp);
+
+        var totalW = dayW + gap + monBmp.getWidth();
+        var startX = x - totalW / 2;
+        dc.drawText(startX, y2, smallFont, dayStr,
+            Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.drawBitmap(startX + dayW + gap, y2 - monH / 2, monBmp);
+    }
+
+    function loadWeekday(dow) {
+        if (dow == 1) { return WatchUi.loadResource(Rez.Drawables.Wd1); }
+        if (dow == 2) { return WatchUi.loadResource(Rez.Drawables.Wd2); }
+        if (dow == 3) { return WatchUi.loadResource(Rez.Drawables.Wd3); }
+        if (dow == 4) { return WatchUi.loadResource(Rez.Drawables.Wd4); }
+        if (dow == 5) { return WatchUi.loadResource(Rez.Drawables.Wd5); }
+        if (dow == 6) { return WatchUi.loadResource(Rez.Drawables.Wd6); }
+        return WatchUi.loadResource(Rez.Drawables.Wd7);
+    }
+
+    function loadMonth(m) {
+        if (m == 1)  { return WatchUi.loadResource(Rez.Drawables.Mon1); }
+        if (m == 2)  { return WatchUi.loadResource(Rez.Drawables.Mon2); }
+        if (m == 3)  { return WatchUi.loadResource(Rez.Drawables.Mon3); }
+        if (m == 4)  { return WatchUi.loadResource(Rez.Drawables.Mon4); }
+        if (m == 5)  { return WatchUi.loadResource(Rez.Drawables.Mon5); }
+        if (m == 6)  { return WatchUi.loadResource(Rez.Drawables.Mon6); }
+        if (m == 7)  { return WatchUi.loadResource(Rez.Drawables.Mon7); }
+        if (m == 8)  { return WatchUi.loadResource(Rez.Drawables.Mon8); }
+        if (m == 9)  { return WatchUi.loadResource(Rez.Drawables.Mon9); }
+        if (m == 10) { return WatchUi.loadResource(Rez.Drawables.Mon10); }
+        if (m == 11) { return WatchUi.loadResource(Rez.Drawables.Mon11); }
+        return WatchUi.loadResource(Rez.Drawables.Mon12);
     }
 
     function prop(key, dflt) {
