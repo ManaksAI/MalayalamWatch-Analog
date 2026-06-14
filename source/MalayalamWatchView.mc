@@ -205,21 +205,31 @@ class MalayalamWatchView extends WatchUi.WatchFace {
             [-tail, -sw]
         ];
 
-        dc.setColor(color, Graphics.COLOR_TRANSPARENT);
-        dc.setPenWidth(pen);
         var n = local.size();
+        var pts = new [n];
         for (var i = 0; i < n; i++) {
-            var p0 = local[i];
-            var p1 = local[(i + 1) % n];
-            dc.drawLine(cx + p0[0] * sinA + p0[1] * cosA,
-                        cy - p0[0] * cosA + p0[1] * sinA,
-                        cx + p1[0] * sinA + p1[1] * cosA,
-                        cy - p1[0] * cosA + p1[1] * sinA);
+            pts[i] = [cx + local[i][0] * sinA + local[i][1] * cosA,
+                      cy - local[i][0] * cosA + local[i][1] * sinA];
         }
 
-        // Grip loop at the tail end.
+        // Fill the body with the background so the hand is opaque and hides
+        // the date/ticks behind it, then stroke the outline on top.
+        dc.setColor(BG, Graphics.COLOR_TRANSPARENT);
+        dc.fillPolygon(pts);
+        dc.setColor(color, Graphics.COLOR_TRANSPARENT);
+        dc.setPenWidth(pen);
+        for (var i = 0; i < n; i++) {
+            var p0 = pts[i];
+            var p1 = pts[(i + 1) % n];
+            dc.drawLine(p0[0], p0[1], p1[0], p1[1]);
+        }
+
+        // Grip loop at the tail end (opaque interior, then outline).
         var lx = cx - (tail) * sinA;
         var ly = cy + (tail) * cosA;
+        dc.setColor(BG, Graphics.COLOR_TRANSPARENT);
+        dc.fillCircle(lx, ly, loopR);
+        dc.setColor(color, Graphics.COLOR_TRANSPARENT);
         dc.drawCircle(lx, ly, loopR);
     }
 
@@ -227,11 +237,15 @@ class MalayalamWatchView extends WatchUi.WatchFace {
     function drawSecondHand(dc, angle, length, tail, color) {
         var sinA = Math.sin(angle);
         var cosA = Math.cos(angle);
+        var lx = cx - tail * sinA;
+        var ly = cy + tail * cosA;
         dc.setColor(color, Graphics.COLOR_TRANSPARENT);
         dc.setPenWidth(2);
-        dc.drawLine(cx - tail * sinA, cy + tail * cosA,
-                    cx + length * sinA, cy - length * cosA);
-        dc.drawCircle(cx - tail * sinA, cy + tail * cosA, 4);
+        dc.drawLine(lx, ly, cx + length * sinA, cy - length * cosA);
+        dc.setColor(BG, Graphics.COLOR_TRANSPARENT);
+        dc.fillCircle(lx, ly, 4);
+        dc.setColor(color, Graphics.COLOR_TRANSPARENT);
+        dc.drawCircle(lx, ly, 4);
     }
 
     // ════════════════════════════════════════════════════════════

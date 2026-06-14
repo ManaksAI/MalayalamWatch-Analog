@@ -112,10 +112,11 @@ def paddle(dr, cx, cy, angle, length, blade_len, bw, sw, tail, loop_r, pen, colo
         (b, -sw), (-tail, -sw),
     ]
     pts = [_xy(cx, cy, s, c, a, p) for (a, p) in local]
+    dr.polygon(pts, fill=PAPER)            # opaque body hides date/ticks behind
     dr.line(pts + [pts[0]], fill=color, width=pen, joint="curve")
     lx, ly = cx - tail * s, cy + tail * c
     dr.ellipse([lx - loop_r, ly - loop_r, lx + loop_r, ly + loop_r],
-               outline=color, width=pen)
+               fill=PAPER, outline=color, width=pen)
 
 
 def second_hand(dr, cx, cy, angle, length, tail, color):
