@@ -313,7 +313,7 @@ class MalayalamWatchView extends WatchUi.WatchFace {
         var dayFont;
         if (prop("DayNumerals", 0) == 1) {
             dayStr  = today.day.toString();
-            dayFont = Graphics.FONT_SMALL;
+            dayFont = Graphics.FONT_XTINY;
         } else {
             dayStr  = mlNumber(today.day);
             dayFont = smallFont;

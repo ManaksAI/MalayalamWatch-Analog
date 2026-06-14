@@ -16,7 +16,7 @@ HERE = os.path.dirname(__file__)
 FONT = os.path.join(HERE, "fonts", "NotoSansMalayalam.ttf")
 SWIFT = os.path.join(HERE, "render_text.swift")
 OUT = os.path.join(HERE, "..", "resources", "drawables")
-SIZE = "26"
+SIZE = "16"
 INK = "111111"
 WGHT = "600"
 

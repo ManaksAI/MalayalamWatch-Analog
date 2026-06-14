@@ -24,7 +24,7 @@ OUT_DIR = os.path.join(os.path.dirname(__file__), "..", "resources", "fonts")
 # (basename, glyph size px): ml_numerals -> big stacked numerals for the digital face;
 # ml_small -> small numerals for the day-of-month in the date line.
 # (Analog hour numerals are pre-rotated PNGs built by tools/gen_dial.py instead.)
-BUILDS = [("ml_numerals", 66), ("ml_small", 30)]
+BUILDS = [("ml_numerals", 66), ("ml_small", 18)]
 
 # codepoint -> source character (None = draw manually)
 GLYPHS = {}
