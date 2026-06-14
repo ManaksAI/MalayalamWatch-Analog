@@ -37,6 +37,8 @@ INK = (17, 17, 17, 255)
 SOFT = (110, 107, 97, 255)
 SEC = (68, 64, 56, 255)
 
+DIAL_STYLE = "u"   # which numeral set to preview: u=upright, r=radial, t=tangential
+
 ML_TEN, ML_ZERO = 0x0D70, 0x2014
 
 
@@ -151,7 +153,7 @@ def analog(h, m, sec, size=320):
         a = n * math.pi / 6.0
         x = cx + rnum * math.sin(a)
         y = cy - rnum * math.cos(a)
-        glyph = Image.open(os.path.join(draw_dir, "dial_%d.png" % n)).convert("RGBA")
+        glyph = Image.open(os.path.join(draw_dir, "dial_%s_%d.png" % (DIAL_STYLE, n))).convert("RGBA")
         paste_centered(img, glyph, x, y)
 
     df = small_font(15)
@@ -160,11 +162,11 @@ def analog(h, m, sec, size=320):
     hourA = (h % 12 + m / 60.0) * math.pi / 6.0
     minA = (m + sec / 60.0) * math.pi / 30.0
     secA = sec * math.pi / 30.0
-    paddle(dr, cx, cy, hourA, r * 0.40, r * 0.40 * 0.46, r * 0.085, r * 0.018,
+    paddle(dr, cx, cy, hourA, r * 0.46, r * 0.46 * 0.46, r * 0.088, r * 0.018,
            r * 0.20, r * 0.052, 3, INK)
-    paddle(dr, cx, cy, minA, r * 0.54, r * 0.54 * 0.40, r * 0.064, r * 0.016,
+    paddle(dr, cx, cy, minA, r * 0.60, r * 0.60 * 0.38, r * 0.066, r * 0.016,
            r * 0.22, r * 0.044, 2, INK)
-    second_hand(dr, cx, cy, secA, r * 0.56, r * 0.20, SEC)
+    second_hand(dr, cx, cy, secA, r * 0.62, r * 0.20, SEC)
 
     dr.ellipse([cx - 5, cy - 5, cx + 5, cy + 5], fill=INK)
     dr.ellipse([cx - 2, cy - 2, cx + 2, cy + 2], fill=PAPER)

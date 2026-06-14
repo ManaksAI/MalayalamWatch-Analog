@@ -6,6 +6,11 @@
     <string id="StyleAnalog">Analog</string>
     <string id="StyleDigital">Digital</string>
 
+    <string id="NumeralStyleTitle">Numeral Orientation (Analog)</string>
+    <string id="NumeralUpright">Upright</string>
+    <string id="NumeralRadial">Radial</string>
+    <string id="NumeralTangential">Tangential</string>
+
     <string id="ShowSecondsTitle">Show Second Hand (Analog)</string>
 
     <string id="ClockModeTitle">Clock Format (Digital)</string>

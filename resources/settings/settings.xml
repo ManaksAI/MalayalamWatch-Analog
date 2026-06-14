@@ -7,6 +7,14 @@
         </settingConfig>
     </setting>
 
+    <setting propertyKey="@Properties.NumeralStyle" title="@Strings.NumeralStyleTitle">
+        <settingConfig type="list">
+            <listEntry value="0">@Strings.NumeralUpright</listEntry>
+            <listEntry value="1">@Strings.NumeralRadial</listEntry>
+            <listEntry value="2">@Strings.NumeralTangential</listEntry>
+        </settingConfig>
+    </setting>
+
     <setting propertyKey="@Properties.ShowSeconds" title="@Strings.ShowSecondsTitle">
         <settingConfig type="boolean" />
     </setting>

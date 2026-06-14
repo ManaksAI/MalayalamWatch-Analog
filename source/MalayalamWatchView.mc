@@ -26,7 +26,8 @@ class MalayalamWatchView extends WatchUi.WatchFace {
     private var cy;
     private var radius;
     private var bigFont;      // stacked digital numerals
-    private var dialBmps;     // pre-rotated radial hour numerals 1..12
+    private var dialBmps;     // pre-rotated hour numerals 1..12 (current style)
+    private var loadedStyle = -1;
     private var isAwake = true;
 
     function initialize() {
@@ -38,20 +39,54 @@ class MalayalamWatchView extends WatchUi.WatchFace {
         cy = dc.getHeight() / 2;
         radius = (cx < cy) ? cx : cy;
         bigFont  = WatchUi.loadResource(Rez.Fonts.MlNumerals);
+        loadDial(prop("NumeralStyle", 0));
+    }
 
+    // Load the 12 hour-numeral bitmaps for the chosen orientation style
+    // (0 = upright, 1 = radial, 2 = tangential).
+    function loadDial(style) {
         dialBmps = new [13];   // index 1..12
-        dialBmps[1]  = WatchUi.loadResource(Rez.Drawables.Dial1);
-        dialBmps[2]  = WatchUi.loadResource(Rez.Drawables.Dial2);
-        dialBmps[3]  = WatchUi.loadResource(Rez.Drawables.Dial3);
-        dialBmps[4]  = WatchUi.loadResource(Rez.Drawables.Dial4);
-        dialBmps[5]  = WatchUi.loadResource(Rez.Drawables.Dial5);
-        dialBmps[6]  = WatchUi.loadResource(Rez.Drawables.Dial6);
-        dialBmps[7]  = WatchUi.loadResource(Rez.Drawables.Dial7);
-        dialBmps[8]  = WatchUi.loadResource(Rez.Drawables.Dial8);
-        dialBmps[9]  = WatchUi.loadResource(Rez.Drawables.Dial9);
-        dialBmps[10] = WatchUi.loadResource(Rez.Drawables.Dial10);
-        dialBmps[11] = WatchUi.loadResource(Rez.Drawables.Dial11);
-        dialBmps[12] = WatchUi.loadResource(Rez.Drawables.Dial12);
+        if (style == 1) {
+            dialBmps[1]  = WatchUi.loadResource(Rez.Drawables.DialR1);
+            dialBmps[2]  = WatchUi.loadResource(Rez.Drawables.DialR2);
+            dialBmps[3]  = WatchUi.loadResource(Rez.Drawables.DialR3);
+            dialBmps[4]  = WatchUi.loadResource(Rez.Drawables.DialR4);
+            dialBmps[5]  = WatchUi.loadResource(Rez.Drawables.DialR5);
+            dialBmps[6]  = WatchUi.loadResource(Rez.Drawables.DialR6);
+            dialBmps[7]  = WatchUi.loadResource(Rez.Drawables.DialR7);
+            dialBmps[8]  = WatchUi.loadResource(Rez.Drawables.DialR8);
+            dialBmps[9]  = WatchUi.loadResource(Rez.Drawables.DialR9);
+            dialBmps[10] = WatchUi.loadResource(Rez.Drawables.DialR10);
+            dialBmps[11] = WatchUi.loadResource(Rez.Drawables.DialR11);
+            dialBmps[12] = WatchUi.loadResource(Rez.Drawables.DialR12);
+        } else if (style == 2) {
+            dialBmps[1]  = WatchUi.loadResource(Rez.Drawables.DialT1);
+            dialBmps[2]  = WatchUi.loadResource(Rez.Drawables.DialT2);
+            dialBmps[3]  = WatchUi.loadResource(Rez.Drawables.DialT3);
+            dialBmps[4]  = WatchUi.loadResource(Rez.Drawables.DialT4);
+            dialBmps[5]  = WatchUi.loadResource(Rez.Drawables.DialT5);
+            dialBmps[6]  = WatchUi.loadResource(Rez.Drawables.DialT6);
+            dialBmps[7]  = WatchUi.loadResource(Rez.Drawables.DialT7);
+            dialBmps[8]  = WatchUi.loadResource(Rez.Drawables.DialT8);
+            dialBmps[9]  = WatchUi.loadResource(Rez.Drawables.DialT9);
+            dialBmps[10] = WatchUi.loadResource(Rez.Drawables.DialT10);
+            dialBmps[11] = WatchUi.loadResource(Rez.Drawables.DialT11);
+            dialBmps[12] = WatchUi.loadResource(Rez.Drawables.DialT12);
+        } else {
+            dialBmps[1]  = WatchUi.loadResource(Rez.Drawables.DialU1);
+            dialBmps[2]  = WatchUi.loadResource(Rez.Drawables.DialU2);
+            dialBmps[3]  = WatchUi.loadResource(Rez.Drawables.DialU3);
+            dialBmps[4]  = WatchUi.loadResource(Rez.Drawables.DialU4);
+            dialBmps[5]  = WatchUi.loadResource(Rez.Drawables.DialU5);
+            dialBmps[6]  = WatchUi.loadResource(Rez.Drawables.DialU6);
+            dialBmps[7]  = WatchUi.loadResource(Rez.Drawables.DialU7);
+            dialBmps[8]  = WatchUi.loadResource(Rez.Drawables.DialU8);
+            dialBmps[9]  = WatchUi.loadResource(Rez.Drawables.DialU9);
+            dialBmps[10] = WatchUi.loadResource(Rez.Drawables.DialU10);
+            dialBmps[11] = WatchUi.loadResource(Rez.Drawables.DialU11);
+            dialBmps[12] = WatchUi.loadResource(Rez.Drawables.DialU12);
+        }
+        loadedStyle = style;
     }
 
     function onUpdate(dc) {
@@ -75,6 +110,11 @@ class MalayalamWatchView extends WatchUi.WatchFace {
         var sec   = clock.sec;
         var r     = radius;
 
+        var style = prop("NumeralStyle", 0);
+        if (style != loadedStyle) {
+            loadDial(style);
+        }
+
         drawRingAndTicks(dc, r);
         drawDialNumerals(dc, r);
         drawDate(dc, cx, cy + (r * 0.40).toNumber());
@@ -86,15 +126,15 @@ class MalayalamWatchView extends WatchUi.WatchFace {
         // Boat-paddle hands (outline). Lengths kept short so the tips stop
         // before the numeral ring. Args: angle, length, bladeLen,
         // bladeHalfW, shaftHalfW, tail, loopR, pen, color.
-        drawPaddle(dc, hourA, r * 0.40, r * 0.40 * 0.46, r * 0.085, r * 0.018,
+        drawPaddle(dc, hourA, r * 0.46, r * 0.46 * 0.46, r * 0.088, r * 0.018,
                    r * 0.20, r * 0.052, 3, INK);
-        drawPaddle(dc, minA,  r * 0.54, r * 0.54 * 0.40, r * 0.064, r * 0.016,
+        drawPaddle(dc, minA,  r * 0.60, r * 0.60 * 0.38, r * 0.066, r * 0.016,
                    r * 0.22, r * 0.044, 2, INK);
 
         var showSec = prop("ShowSeconds", true);
         if (showSec && isAwake) {
             var secA = sec * Math.PI / 30.0;
-            drawSecondHand(dc, secA, r * 0.56, r * 0.20, SEC);
+            drawSecondHand(dc, secA, r * 0.62, r * 0.20, SEC);
         }
 
         // Centre hub.

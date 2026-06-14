@@ -3,6 +3,9 @@
     <!-- 0 = analog dial, 1 = digital stacked numerals -->
     <property id="FaceStyle" type="number">0</property>
 
+    <!-- analog numeral orientation: 0 = upright, 1 = radial, 2 = tangential -->
+    <property id="NumeralStyle" type="number">0</property>
+
     <!-- analog second hand -->
     <property id="ShowSeconds" type="boolean">true</property>
 

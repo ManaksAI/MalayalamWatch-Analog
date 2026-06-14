@@ -1,19 +1,18 @@
 #!/usr/bin/env python3
 """
-Pre-render the 12 analog hour numerals (old Malayalam) already rotated to their
-radial angle, as PNG drawables. Connect IQ's drawText can't rotate text, and the
-dial positions are fixed, so we bake the rotation in at build time and just blit.
+Pre-render the 12 analog hour numerals (old Malayalam) as PNG drawables, in THREE
+orientation styles the watch face lets the user choose between:
 
-A numeral at clock position n (1..12) sits at angle n*30° clockwise from 12. It is
-rotated radially so its base faces the centre, EXCEPT the bottom numbers 4..8, which
-are flipped 180° so they stay upright/readable instead of upside-down:
-12 upright, 3 turned 90° CW, 6 upright, 9 turned 90° CCW.
+  u (upright)     - every numeral horizontal / fully readable
+  r (radial)      - radial, tops pointing outward; the bottom 4..8 flipped up so
+                    they are not upside-down
+  t (tangential)  - numerals follow the rim tangent, kept readable
 
-Glyphs are rendered in dark "ink" for the e-paper look (drawBitmap is not tinted by
-the watch, so the colour is baked in here).
+Connect IQ's drawText can't rotate text, and the dial positions are fixed, so the
+rotation (and dark e-paper ink colour) is baked in here and the watch just blits.
 
 Run:  python3 tools/gen_dial.py
-Outputs: resources/drawables/dial_1.png .. dial_12.png
+Outputs: resources/drawables/dial_<u|r|t>_1.png .. dial_<u|r|t>_12.png
 """
 import os
 from PIL import Image, ImageDraw, ImageFont
@@ -34,17 +33,31 @@ def label(n):
     return chr(0x0D70) + chr(0x0D66 + (n - 10))   # 11 -> ൰൧, 12 -> ൰൨
 
 
+def rot_upright(n):
+    return 0
+
+
+def rot_radial(n):                      # tops outward; flip the bottom half
+    a = n * 30
+    return a - 180 if 90 < a < 270 else a
+
+
+def rot_tangential(n):                  # follow the rim tangent, kept readable
+    a = (n * 30 + 90) % 360
+    return a - 180 if 90 < a < 270 else a
+
+
+SCHEMES = {"u": rot_upright, "r": rot_radial, "t": rot_tangential}
+
 os.makedirs(OUT, exist_ok=True)
-for n in range(1, 13):
-    s = label(n)
-    bbox = font.getbbox(s)
-    w = bbox[2] - bbox[0]
-    h = bbox[3] - bbox[1]
-    img = Image.new("RGBA", (w + 2 * PAD, h + 2 * PAD), (0, 0, 0, 0))
-    ImageDraw.Draw(img).text((PAD - bbox[0], PAD - bbox[1]), s, font=font, fill=INK)
-    rot_cw = n * 30
-    if 4 <= n <= 8:                      # keep bottom numbers upright
-        rot_cw -= 180
-    rot = img.rotate(-rot_cw, expand=True, resample=Image.BICUBIC)
-    rot.save(os.path.join(OUT, "dial_%d.png" % n))
-    print("dial_%d (%s) rot=%d -> %dx%d" % (n, s, rot_cw, rot.width, rot.height))
+for key, fn in SCHEMES.items():
+    for n in range(1, 13):
+        s = label(n)
+        bbox = font.getbbox(s)
+        w = bbox[2] - bbox[0]
+        h = bbox[3] - bbox[1]
+        img = Image.new("RGBA", (w + 2 * PAD, h + 2 * PAD), (0, 0, 0, 0))
+        ImageDraw.Draw(img).text((PAD - bbox[0], PAD - bbox[1]), s, font=font, fill=INK)
+        rot = img.rotate(-fn(n), expand=True, resample=Image.BICUBIC)
+        rot.save(os.path.join(OUT, "dial_%s_%d.png" % (key, n)))
+    print("style '%s' -> 12 glyphs" % key)
