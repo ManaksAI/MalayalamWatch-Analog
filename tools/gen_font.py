@@ -20,9 +20,9 @@ PAD = 3                        # transparent padding around each glyph cell
 GAP = 2                        # gap between cells in the atlas
 OUT_DIR = os.path.join(os.path.dirname(__file__), "..", "resources", "fonts")
 
-# (basename, glyph size px): ml_numerals -> big stacked digital face,
-#                            ml_dial     -> small markers around the analog dial
-BUILDS = [("ml_numerals", 66), ("ml_dial", 28)]
+# (basename, glyph size px): ml_numerals -> big stacked numerals for the digital face.
+# (Analog hour numerals are pre-rotated PNGs built by tools/gen_dial.py instead.)
+BUILDS = [("ml_numerals", 66)]
 
 # codepoint -> source character (None = draw manually)
 GLYPHS = {}

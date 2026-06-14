@@ -29,8 +29,7 @@ def load_font(basename):
     return atlas, glyphs, lh
 
 
-BIG  = load_font("ml_numerals")
-DIAL = load_font("ml_dial")
+BIG = load_font("ml_numerals")   # digital face; analog uses pre-rotated dial_*.png
 
 ML_TEN, ML_ZERO = 0x0D70, 0x2014
 
@@ -140,12 +139,14 @@ def analog(h, m, sec, size=320):
         dr.line([cx + inner * s, cy - inner * c, cx + outer * s, cy - outer * c],
                 fill=(85, 85, 85, 255), width=3 if i % 5 == 0 else 1)
 
-    rnum = r - 28
+    rnum = r - 32
+    draw_dir = os.path.join(HERE, "..", "resources", "drawables")
     for n in range(1, 13):
         a = n * math.pi / 6.0
         x = cx + rnum * math.sin(a)
         y = cy - rnum * math.cos(a)
-        paste_centered(img, render(DIAL, dial_cps(n), (255, 255, 255)), x, y)
+        glyph = Image.open(os.path.join(draw_dir, "dial_%d.png" % n)).convert("RGBA")
+        paste_centered(img, glyph, x, y)
 
     df = small_font(15)
     dr.text((cx, cy + r * 0.40), "WED 14", font=df, fill=(136, 136, 136, 255), anchor="mm")

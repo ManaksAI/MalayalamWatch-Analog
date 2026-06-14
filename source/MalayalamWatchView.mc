@@ -19,8 +19,8 @@ class MalayalamWatchView extends WatchUi.WatchFace {
     private var cx;
     private var cy;
     private var radius;
-    private var bigFont;     // stacked digital numerals
-    private var dialFont;    // small markers around the analog dial
+    private var bigFont;      // stacked digital numerals
+    private var dialBmps;     // pre-rotated radial hour numerals 1..12
     private var isAwake = true;
 
     function initialize() {
@@ -32,7 +32,20 @@ class MalayalamWatchView extends WatchUi.WatchFace {
         cy = dc.getHeight() / 2;
         radius = (cx < cy) ? cx : cy;
         bigFont  = WatchUi.loadResource(Rez.Fonts.MlNumerals);
-        dialFont = WatchUi.loadResource(Rez.Fonts.MlDial);
+
+        dialBmps = new [13];   // index 1..12
+        dialBmps[1]  = WatchUi.loadResource(Rez.Drawables.Dial1);
+        dialBmps[2]  = WatchUi.loadResource(Rez.Drawables.Dial2);
+        dialBmps[3]  = WatchUi.loadResource(Rez.Drawables.Dial3);
+        dialBmps[4]  = WatchUi.loadResource(Rez.Drawables.Dial4);
+        dialBmps[5]  = WatchUi.loadResource(Rez.Drawables.Dial5);
+        dialBmps[6]  = WatchUi.loadResource(Rez.Drawables.Dial6);
+        dialBmps[7]  = WatchUi.loadResource(Rez.Drawables.Dial7);
+        dialBmps[8]  = WatchUi.loadResource(Rez.Drawables.Dial8);
+        dialBmps[9]  = WatchUi.loadResource(Rez.Drawables.Dial9);
+        dialBmps[10] = WatchUi.loadResource(Rez.Drawables.Dial10);
+        dialBmps[11] = WatchUi.loadResource(Rez.Drawables.Dial11);
+        dialBmps[12] = WatchUi.loadResource(Rez.Drawables.Dial12);
     }
 
     function onUpdate(dc) {
@@ -101,28 +114,18 @@ class MalayalamWatchView extends WatchUi.WatchFace {
         }
     }
 
-    // Malayalam hour numerals 1..12 along the border ring.
+    // Malayalam hour numerals 1..12 along the border ring, each pre-rotated to
+    // sit radially (see tools/gen_dial.py).
     function drawDialNumerals(dc, r) {
-        var rNum = r - 28;
-        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+        var rNum = r - 32;
         for (var n = 1; n <= 12; n++) {
             var a = n * Math.PI / 6.0;
             var x = cx + rNum * Math.sin(a);
             var y = cy - rNum * Math.cos(a);
-            dc.drawText(x, y, dialFont, dialLabel(n),
-                Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+            var bmp = dialBmps[n];
+            dc.drawBitmap((x - bmp.getWidth() / 2.0).toNumber(),
+                          (y - bmp.getHeight() / 2.0).toNumber(), bmp);
         }
-    }
-
-    // Old-Malayalam form of the hour markers 1..12.
-    function dialLabel(n) {
-        if (n < 10) {
-            return mlDigits[n];
-        }
-        if (n == 10) {
-            return ML_TEN;
-        }
-        return ML_TEN + mlDigits[n - 10];   // 11 -> ൰൧, 12 -> ൰൨
     }
 
     // ── Boat-paddle shaped hand (outline) ───────────────────────
