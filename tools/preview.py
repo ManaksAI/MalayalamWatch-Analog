@@ -31,6 +31,12 @@ def load_font(basename):
 
 BIG = load_font("ml_numerals")   # digital face; analog uses pre-rotated dial_*.png
 
+# e-paper palette (mirror of MalayalamWatchView)
+PAPER = (201, 198, 187, 255)
+INK = (17, 17, 17, 255)
+SOFT = (110, 107, 97, 255)
+SEC = (68, 64, 56, 255)
+
 ML_TEN, ML_ZERO = 0x0D70, 0x2014
 
 
@@ -126,20 +132,20 @@ def analog(h, m, sec, size=320):
     dr = ImageDraw.Draw(img)
     cx = cy = size / 2
     r = size / 2
-    dr.ellipse([0, 0, size - 1, size - 1], fill=(0, 0, 0, 255))
+    dr.ellipse([0, 0, size - 1, size - 1], fill=PAPER)
 
     # border ring
     dr.ellipse([cx - (r - 2), cy - (r - 2), cx + (r - 2), cy + (r - 2)],
-               outline=(85, 85, 85, 255), width=2)
+               outline=SOFT, width=2)
     for i in range(60):
         a = i * math.pi / 30.0
         s, c = math.sin(a), math.cos(a)
         outer = r - 3
         inner = r - 12 if i % 5 == 0 else r - 7
         dr.line([cx + inner * s, cy - inner * c, cx + outer * s, cy - outer * c],
-                fill=(85, 85, 85, 255), width=3 if i % 5 == 0 else 1)
+                fill=SOFT, width=3 if i % 5 == 0 else 1)
 
-    rnum = r - 32
+    rnum = r - 30
     draw_dir = os.path.join(HERE, "..", "resources", "drawables")
     for n in range(1, 13):
         a = n * math.pi / 6.0
@@ -149,19 +155,19 @@ def analog(h, m, sec, size=320):
         paste_centered(img, glyph, x, y)
 
     df = small_font(15)
-    dr.text((cx, cy + r * 0.40), "WED 14", font=df, fill=(136, 136, 136, 255), anchor="mm")
+    dr.text((cx, cy + r * 0.40), "WED 14", font=df, fill=SOFT, anchor="mm")
 
     hourA = (h % 12 + m / 60.0) * math.pi / 6.0
     minA = (m + sec / 60.0) * math.pi / 30.0
     secA = sec * math.pi / 30.0
-    paddle(dr, cx, cy, hourA, r * 0.52, r * 0.52 * 0.44, r * 0.090, r * 0.018,
-           r * 0.22, r * 0.055, 3, (255, 255, 255, 255))
-    paddle(dr, cx, cy, minA, r * 0.76, r * 0.76 * 0.36, r * 0.068, r * 0.016,
-           r * 0.24, r * 0.048, 2, (255, 255, 255, 255))
-    second_hand(dr, cx, cy, secA, r * 0.82, r * 0.24, (230, 40, 40, 255))
+    paddle(dr, cx, cy, hourA, r * 0.40, r * 0.40 * 0.46, r * 0.085, r * 0.018,
+           r * 0.20, r * 0.052, 3, INK)
+    paddle(dr, cx, cy, minA, r * 0.54, r * 0.54 * 0.40, r * 0.064, r * 0.016,
+           r * 0.22, r * 0.044, 2, INK)
+    second_hand(dr, cx, cy, secA, r * 0.56, r * 0.20, SEC)
 
-    dr.ellipse([cx - 5, cy - 5, cx + 5, cy + 5], fill=(255, 255, 255, 255))
-    dr.ellipse([cx - 2, cy - 2, cx + 2, cy + 2], fill=(230, 40, 40, 255))
+    dr.ellipse([cx - 5, cy - 5, cx + 5, cy + 5], fill=INK)
+    dr.ellipse([cx - 2, cy - 2, cx + 2, cy + 2], fill=PAPER)
     return img
 
 
@@ -169,14 +175,13 @@ def digital(h, m, size=320):
     img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
     dr = ImageDraw.Draw(img)
     cx = cy = size / 2
-    dr.ellipse([0, 0, size - 1, size - 1], fill=(0, 0, 0, 255))
+    dr.ellipse([0, 0, size - 1, size - 1], fill=PAPER)
     lh = BIG[2]
     sep = 6
-    paste_centered(img, render(BIG, number_cps(h), (255, 255, 255)), cx, cy - sep - lh / 2)
-    paste_centered(img, render(BIG, number_cps(m), (255, 255, 255)), cx, cy + sep + lh / 2)
-    dr.line([cx - 34, cy, cx + 34, cy], fill=(85, 85, 85, 255), width=2)
-    dr.text((cx, cy - lh - 24), "WED 14", font=small_font(15),
-            fill=(136, 136, 136, 255), anchor="mm")
+    paste_centered(img, render(BIG, number_cps(h), INK[:3]), cx, cy - sep - lh / 2)
+    paste_centered(img, render(BIG, number_cps(m), INK[:3]), cx, cy + sep + lh / 2)
+    dr.line([cx - 34, cy, cx + 34, cy], fill=SOFT, width=2)
+    dr.text((cx, cy - lh - 24), "WED 14", font=small_font(15), fill=SOFT, anchor="mm")
     return img
 
 

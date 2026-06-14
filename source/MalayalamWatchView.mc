@@ -16,6 +16,12 @@ class MalayalamWatchView extends WatchUi.WatchFace {
     private const ML_ZERO = "—";
     private var mlDigits = ["", "൧", "൨", "൩", "൪", "൫", "൬", "൭", "൮", "൯"];
 
+    // E-paper palette: dark ink on a warm paper background, flat and monochrome.
+    private const BG   = 0xC9C6BB;   // paper
+    private const INK  = 0x111111;   // dark ink (numerals/hands)
+    private const SOFT = 0x6E6B61;   // muted ink (ring, ticks, date)
+    private const SEC  = 0x444038;   // second hand (monochrome accent)
+
     private var cx;
     private var cy;
     private var radius;
@@ -49,7 +55,7 @@ class MalayalamWatchView extends WatchUi.WatchFace {
     }
 
     function onUpdate(dc) {
-        dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
+        dc.setColor(INK, BG);
         dc.clear();
 
         if (prop("FaceStyle", 0) == 1) {
@@ -77,29 +83,30 @@ class MalayalamWatchView extends WatchUi.WatchFace {
         var hourA = (hour + min / 60.0) * Math.PI / 6.0;
         var minA  = (min + sec / 60.0) * Math.PI / 30.0;
 
-        // Boat-paddle hands (outline). Args: angle, length, bladeLen,
+        // Boat-paddle hands (outline). Lengths kept short so the tips stop
+        // before the numeral ring. Args: angle, length, bladeLen,
         // bladeHalfW, shaftHalfW, tail, loopR, pen, color.
-        drawPaddle(dc, hourA, r * 0.52, r * 0.52 * 0.44, r * 0.090, r * 0.018,
-                   r * 0.22, r * 0.055, 3, Graphics.COLOR_WHITE);
-        drawPaddle(dc, minA,  r * 0.76, r * 0.76 * 0.36, r * 0.068, r * 0.016,
-                   r * 0.24, r * 0.048, 2, Graphics.COLOR_WHITE);
+        drawPaddle(dc, hourA, r * 0.40, r * 0.40 * 0.46, r * 0.085, r * 0.018,
+                   r * 0.20, r * 0.052, 3, INK);
+        drawPaddle(dc, minA,  r * 0.54, r * 0.54 * 0.40, r * 0.064, r * 0.016,
+                   r * 0.22, r * 0.044, 2, INK);
 
         var showSec = prop("ShowSeconds", true);
         if (showSec && isAwake) {
             var secA = sec * Math.PI / 30.0;
-            drawSecondHand(dc, secA, r * 0.82, r * 0.24, Graphics.COLOR_RED);
+            drawSecondHand(dc, secA, r * 0.56, r * 0.20, SEC);
         }
 
         // Centre hub.
-        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+        dc.setColor(INK, Graphics.COLOR_TRANSPARENT);
         dc.fillCircle(cx, cy, 5);
-        dc.setColor(Graphics.COLOR_RED, Graphics.COLOR_TRANSPARENT);
+        dc.setColor(BG, Graphics.COLOR_TRANSPARENT);
         dc.fillCircle(cx, cy, 2);
     }
 
     // Outer border ring + minute ticks pointing inward from the rim.
     function drawRingAndTicks(dc, r) {
-        dc.setColor(0x555555, Graphics.COLOR_TRANSPARENT);
+        dc.setColor(SOFT, Graphics.COLOR_TRANSPARENT);
         dc.setPenWidth(2);
         dc.drawCircle(cx, cy, r - 2);
         for (var i = 0; i < 60; i++) {
@@ -117,7 +124,7 @@ class MalayalamWatchView extends WatchUi.WatchFace {
     // Malayalam hour numerals 1..12 along the border ring, each pre-rotated to
     // sit radially (see tools/gen_dial.py).
     function drawDialNumerals(dc, r) {
-        var rNum = r - 32;
+        var rNum = r - 30;
         for (var n = 1; n <= 12; n++) {
             var a = n * Math.PI / 6.0;
             var x = cx + rNum * Math.sin(a);
@@ -194,13 +201,13 @@ class MalayalamWatchView extends WatchUi.WatchFace {
 
         drawDate(dc, cx, cy - fh - 24);
 
-        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+        dc.setColor(INK, Graphics.COLOR_TRANSPARENT);
         dc.drawText(cx, cy - sep - fh, bigFont, mlNumber(hour),
             Graphics.TEXT_JUSTIFY_CENTER);
         dc.drawText(cx, cy + sep, bigFont, mlNumber(clock.min),
             Graphics.TEXT_JUSTIFY_CENTER);
 
-        dc.setColor(0x555555, Graphics.COLOR_TRANSPARENT);
+        dc.setColor(SOFT, Graphics.COLOR_TRANSPARENT);
         dc.setPenWidth(2);
         dc.drawLine(cx - 34, cy, cx + 34, cy);
     }
@@ -248,7 +255,7 @@ class MalayalamWatchView extends WatchUi.WatchFace {
     function drawDate(dc, x, y) {
         var today   = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
         var dateStr = Lang.format("$1$ $2$", [today.day_of_week, today.day]);
-        dc.setColor(0x888888, Graphics.COLOR_TRANSPARENT);
+        dc.setColor(SOFT, Graphics.COLOR_TRANSPARENT);
         dc.drawText(x, y, Graphics.FONT_XTINY, dateStr,
             Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
     }
