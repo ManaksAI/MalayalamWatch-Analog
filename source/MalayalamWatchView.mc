@@ -174,6 +174,9 @@ class MalayalamWatchView extends WatchUi.WatchFace {
             var a = n * Math.PI / 6.0;
             var x = cx + rNum * Math.sin(a);
             var y = cy - rNum * Math.cos(a);
+            // nudge only 11 (left 4px, down 1px) and 12 (right 2px); others unchanged
+            if (n == 11) { x -= 4; y += 1; }
+            else if (n == 12) { x += 2; }
             var bmp = dialBmps[n];
             dc.drawBitmap((x - bmp.getWidth() / 2.0).toNumber(),
                           (y - bmp.getHeight() / 2.0).toNumber(), bmp);

@@ -19,7 +19,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 FONT_PATH = os.path.join(os.path.dirname(__file__), "fonts", "NotoSansMalayalam.ttf")
 FONT_WEIGHT = "SemiBold"
-SIZE = 30
+SIZE = 24
 PAD = 4
 INK = (17, 17, 17, 255)        # e-paper ink
 OUT = os.path.join(os.path.dirname(__file__), "..", "resources", "drawables")
