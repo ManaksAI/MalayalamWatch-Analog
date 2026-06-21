@@ -184,6 +184,10 @@ def analog(h, m, sec, size=320):
         a = n * math.pi / 6.0
         x = cx + rnum * math.sin(a)
         y = cy - rnum * math.cos(a)
+        if n == 11:
+            x -= 4; y += 1
+        elif n == 12:
+            x += 2
         glyph = Image.open(os.path.join(draw_dir, "dial_%s_%d.png" % (DIAL_STYLE, n))).convert("RGBA")
         paste_centered(img, glyph, x, y)
 
