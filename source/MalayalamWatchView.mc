@@ -313,9 +313,9 @@ class MalayalamWatchView extends WatchUi.WatchFace {
         return s;
     }
 
-    // ── Malayalam date (two lines centred on y) ─────────────────
+    // ── Date display (two lines centred on y) ─────────────────
     //   line 1:  weekday            e.g. ഞായർ
-    //   line 2:  <day> <month>      e.g. ൰൪ മേയ്
+    //   line 2:  <day> <month>      e.g. 4 മേയ്
     function drawDate(dc, x, y, full) {
         var today = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
         var key = today.month * 32 + today.day_of_week;
@@ -325,16 +325,9 @@ class MalayalamWatchView extends WatchUi.WatchFace {
             dateKey = key;
         }
 
-        // Day-of-month: Malayalam numeral font, or standard digits in a system font.
-        var dayStr;
-        var dayFont;
-        if (prop("DayNumerals", 0) == 1) {
-            dayStr  = today.day.toString();
-            dayFont = Graphics.FONT_XTINY;
-        } else {
-            dayStr  = mlNumber(today.day);
-            dayFont = smallFont;
-        }
+        // Day-of-month: standard digits
+        var dayStr = today.day.toString();
+        var dayFont = smallFont;
         var dayW   = dc.getTextWidthInPixels(dayStr, dayFont);
         var gap    = 6;
         var wdW = wdBmp.getWidth();
