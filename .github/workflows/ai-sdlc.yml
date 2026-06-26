@@ -6,7 +6,7 @@ on:
 
 jobs:
   ai-sdlc:
-    if: github.event.label.name == 'requirement'
+    if: github.event.label.name == 'requirement' || github.event.label.name == 'approved'
     uses: ManaksAI/sdlc-templates/.github/workflows/ai-sdlc.yml@v1
     secrets: inherit
     with:
