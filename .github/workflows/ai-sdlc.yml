@@ -7,7 +7,7 @@ on:
 jobs:
   ai-sdlc:
     if: github.event.label.name == 'requirement'
-    uses: manaksu/sdlc-templates/.github/workflows/ai-sdlc.yml@v1
+    uses: ManaksAI/sdlc-templates/.github/workflows/ai-sdlc.yml@v1
     secrets: inherit
     with:
       auto_implement: false   # analysis-only for now
