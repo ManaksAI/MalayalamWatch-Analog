@@ -11,6 +11,8 @@ Run:  python3 tools/preview.py   ->  /tmp/malayalam_watch_preview.png
 import math, os
 from PIL import Image, ImageDraw, ImageFont
 
+from battery import battery_fill
+
 HERE = os.path.dirname(__file__)
 FONTS = os.path.join(HERE, "..", "resources", "fonts")
 
@@ -153,6 +155,29 @@ def draw_date(img, cx, y, full):
     img.alpha_composite(mon, (sx + day.width + gap, int(y2 - mon.height / 2)))
 
 
+def draw_battery(dr, center_x, top_y, level):
+    """Mirror of drawBattery(): small battery icon, no percentage text.
+
+    Outline + remaining charge use INK (the time colour); the drained portion
+    uses SOFT (a faded shade).
+    """
+    bw, bh, nub_w, nub_h, pad = 28, 12, 2, 6, 2
+    x0 = int(center_x - (bw + nub_w) / 2)
+    y0 = int(top_y)
+    dr.rectangle([x0, y0, x0 + bw, y0 + bh], outline=INK[:3], width=1)
+    dr.rectangle([x0 + bw, y0 + (bh - nub_h) // 2,
+                  x0 + bw + nub_w, y0 + (bh - nub_h) // 2 + nub_h], fill=INK[:3])
+    inner_x, inner_y = x0 + pad, y0 + pad
+    inner_w, inner_h = bw - 2 * pad, bh - 2 * pad
+    fill_w = battery_fill(level, inner_w)
+    if fill_w > 0:
+        dr.rectangle([inner_x, inner_y, inner_x + fill_w, inner_y + inner_h],
+                     fill=INK[:3])
+    if fill_w < inner_w:
+        dr.rectangle([inner_x + fill_w, inner_y, inner_x + inner_w, inner_y + inner_h],
+                     fill=SOFT[:3])
+
+
 def small_font(sz):
     try:
         return ImageFont.truetype("/System/Library/Fonts/Supplemental/Arial.ttf", sz)
@@ -207,7 +232,7 @@ def analog(h, m, sec, size=320):
     return img
 
 
-def digital(h, m, size=320):
+def digital(h, m, size=320, battery=72):
     img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
     dr = ImageDraw.Draw(img)
     cx = cy = size / 2
@@ -218,6 +243,7 @@ def digital(h, m, size=320):
     paste_centered(img, render(BIG, number_cps(m), INK[:3]), cx, cy + sep + lh / 2)
     dr.line([cx - 34, cy, cx + 34, cy], fill=SOFT, width=2)
     draw_date(img, cx, cy - lh - 18, False)
+    draw_battery(dr, cx, cy + sep + lh + 4, battery)
     return img
 
 
