@@ -11,7 +11,7 @@ concurrency:
 
 jobs:
   sdlc:
-    uses: manaksu/sdlc-templates/.github/workflows/standard-sdlc.yml@v1
+    uses: ManaksAI/sdlc-templates/.github/workflows/standard-sdlc.yml@v1
     # For CodeQL-supported languages (python, javascript, java, go, ...) enable:
     # with:
     #   enable_codeql: true
