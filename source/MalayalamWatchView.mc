@@ -272,6 +272,53 @@ class MalayalamWatchView extends WatchUi.WatchFace {
         dc.setColor(SOFT, Graphics.COLOR_TRANSPARENT);
         dc.setPenWidth(2);
         dc.drawLine(cx - 34, cy, cx + 34, cy);
+
+        // Battery indicator, 4px below the bottom of the minute numerals.
+        drawBattery(dc, cx, cy + sep + fh + 4);
+    }
+
+    // ── Battery indicator (digital face only) ───────────────────
+    // A small battery icon below the time. No percentage text. The icon
+    // outline and the remaining-charge fill use the same colour as the time
+    // (INK); the drained portion is shown in a faded shade (SOFT) so the
+    // battery visibly "empties" as it discharges.
+    function drawBattery(dc, centerX, topY) {
+        var level = System.getSystemStats().battery;   // 0.0 .. 100.0
+        if (level < 0)   { level = 0; }
+        if (level > 100) { level = 100; }
+
+        var bw   = 28;   // body width
+        var bh   = 12;   // body height
+        var nubW = 2;    // terminal nub width
+        var nubH = 6;    // terminal nub height
+        var pad  = 2;    // inset between outline and fill
+
+        var x0 = centerX - (bw + nubW) / 2;   // left edge of the body
+        var y0 = topY;
+
+        // Outline + terminal nub (time colour).
+        dc.setColor(INK, Graphics.COLOR_TRANSPARENT);
+        dc.setPenWidth(1);
+        dc.drawRectangle(x0, y0, bw, bh);
+        dc.fillRectangle(x0 + bw, y0 + (bh - nubH) / 2, nubW, nubH);
+
+        // Inner fill area, split into remaining charge and drained portions.
+        var innerX = x0 + pad;
+        var innerY = y0 + pad;
+        var innerW = bw - 2 * pad;
+        var innerH = bh - 2 * pad;
+        var fillW  = (innerW * level / 100.0).toNumber();
+
+        // Remaining charge (left) keeps the original time colour.
+        if (fillW > 0) {
+            dc.setColor(INK, Graphics.COLOR_TRANSPARENT);
+            dc.fillRectangle(innerX, innerY, fillW, innerH);
+        }
+        // Drained portion (right) is a faded shade.
+        if (fillW < innerW) {
+            dc.setColor(SOFT, Graphics.COLOR_TRANSPARENT);
+            dc.fillRectangle(innerX + fillW, innerY, innerW - fillW, innerH);
+        }
     }
 
     // ClockMode: 0 = device setting, 1 = force 12h, 2 = force 24h (digital only).
