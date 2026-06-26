@@ -11,7 +11,7 @@ on:
 
 jobs:
   release:
-    uses: manaksu/sdlc-templates/.github/workflows/release.yml@v1
+    uses: ManaksAI/sdlc-templates/.github/workflows/release.yml@v1
     # Attach built files to the release (adjust glob to your project), e.g.:
     # with:
     #   artifact_glob: "dist/*"     # python/node build output
