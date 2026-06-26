@@ -10,4 +10,4 @@ jobs:
     uses: ManaksAI/sdlc-templates/.github/workflows/ai-sdlc.yml@v1
     secrets: inherit
     with:
-      auto_implement: false   # analysis-only for now
+      auto_implement: true    # autonomous implementation ON
